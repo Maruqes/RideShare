@@ -2,7 +2,7 @@
 
 ## Descrição do Projeto
 
-Este projeto parece ser uma aplicação de calendário desenvolvida com Next.js e React, focada em gerir boleias para a escola. A aplicação permite definir os dias em que dás boleia a alguém e calcular o valor em euros que é dividido entre os participantes. Além disso, a aplicação fornece acesso ao valor total a receber de cada participante.
+Este projeto é uma aplicação de calendário desenvolvida com Next.js e React, focada em gerir boleias para a escola. A aplicação permite definir os dias em que dás boleia a alguém e calcular o valor em euros que é dividido entre os participantes. Além disso, a aplicação fornece acesso ao valor total a receber de cada participante.
 
 ## Pontos Chave
 
