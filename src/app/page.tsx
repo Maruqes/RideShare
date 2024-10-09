@@ -15,6 +15,7 @@ import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { createCurrentTimePlugin } from '@schedule-x/current-time';
 import Modal from './modal';
 import ModalPrecos from './modalPrecos';
+import ModalPessoas from './modalPessoas';
 
 const eventsServicePlugin = createEventsServicePlugin();
 
@@ -23,6 +24,7 @@ interface Event {
   title: string;
   start: string;
   end: string;
+  name: string;
   description: string;
   people: string[];
 }
@@ -86,8 +88,9 @@ function CalendarApp() {
         id: (eventsArr.length + 1).toString(),
         title: 'Boleia 🏎️',
         start: today,
-        end: today,
+        name: 'Boleia',
         description: "O marque veio",
+        end: today,
         people: [
           "Jota",
           "Marques"
@@ -105,6 +108,7 @@ function CalendarApp() {
     <div className="p-4 bg-white h-screen">
       <div className="flex max-w-6xl mx-auto justify-between mb-4">
         <Modal onEventsChange={(events) => setEventsArr(events)} />
+        <ModalPessoas eventsArr={eventsArr} />
         <ModalPrecos eventsArr={eventsArr} ana={ana} />
       </div>
       <div className="max-w-6xl mx-auto">
