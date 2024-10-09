@@ -3,11 +3,16 @@ import React, { useState, useEffect } from 'react';
 const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEventsChange }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [eventsArr, setEventsArr] = useState<any[]>([]);
-    
+    const [selectedPerson, setSelectedPerson] = useState<string>('');
+    const [people, setPeople] = useState<string[]>([]); // Lista de pessoas
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const storedEvents = JSON.parse(localStorage.getItem("ourEvents") || "[]");
             setEventsArr(storedEvents);
+
+            const storedPeople = JSON.parse(localStorage.getItem("pessoas") || "[]");
+            setPeople(storedPeople);
         }
     }, []);
 
@@ -16,18 +21,17 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
     }, [eventsArr, onEventsChange]);
 
     const handleAddEvent = () => {
-        const eventTitle = (document.getElementById('eventTitle') as HTMLInputElement).value;
         const eventDate = (document.getElementById('eventDate') as HTMLInputElement).value;
         const eventDateEnd = (document.getElementById('eventDateEnd') as HTMLInputElement).value;
 
-        if (eventTitle) {
+        if (selectedPerson) {
             const newEvent = {
                 id: (eventsArr.length + 1).toString(),
-                title: eventTitle,
+                title: selectedPerson,
                 start: eventDate,
                 end: (eventDateEnd === '') ? eventDate : eventDateEnd,
                 description: "O marque veio",
-                people: ["Jota", "Marques"]
+                people: [selectedPerson]
             };
 
             const updatedEvents = [...eventsArr, newEvent];
@@ -36,7 +40,7 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
             setIsOpen(false);
             window.location.reload();
         } else {
-            console.log('Event title is required');
+            console.log('Person selection is required');
         }
     };
 
@@ -61,12 +65,17 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
                     <div className="bg-white p-4 rounded">
                         <div className="mb-4">
-                            <input
-                                type="text"
-                                id="eventTitle"
-                                placeholder="Titulo"
+                            <select
+                                id="personSelect"
+                                value={selectedPerson}
+                                onChange={(e) => setSelectedPerson(e.target.value)}
                                 className="w-full p-2 border border-gray-300 rounded mb-2 text-black"
-                            />
+                            >
+                                <option value="">Selecione uma pessoa</option>
+                                {people.map(person => (
+                                    <option key={person} value={person}>{person}</option>
+                                ))}
+                            </select>
                             <input
                                 type="date"
                                 id="eventDate"
