@@ -102,12 +102,12 @@ function CalendarApp() {
   }, []);
 
   return (
-    <div className="p-4 bg-white">
-      <div className="flex justify-between mb-4">
+    <div className="p-4 bg-white h-screen">
+      <div className="flex max-w-6xl mx-auto justify-between mb-4">
         <Modal onEventsChange={(events) => setEventsArr(events)} />
         <ModalPrecos eventsArr={eventsArr} ana={ana} />
       </div>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <ScheduleXCalendar calendarApp={calendar} />
       </div>
     </div>
