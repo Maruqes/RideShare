@@ -36,10 +36,20 @@ function CalendarApp() {
     return storedArray ? JSON.parse(storedArray) : [];
   });
 
+  const [rafaEscola, setRafaEscola] = useState(0);
+  const [rafaResi, setRafaResi] = useState(0);
+  const [jame, setJame] = useState(0);
+
   useEffect(() => {
     localStorage.setItem("ourEvents", JSON.stringify(eventsArr));
     const anaCount = eventsArr.filter(event => event.title.toLowerCase() === "ana").length;
     setAna(anaCount);
+    const rafaEscolaCount = eventsArr.filter(event => event.title.toLowerCase() === "rafa escola").length;
+    setRafaEscola(rafaEscolaCount);
+    const rafaResiCount = eventsArr.filter(event => event.title.toLowerCase() === "rafa resi").length;
+    setRafaResi(rafaResiCount);
+    const jameCount = eventsArr.filter(event => event.title.toLowerCase() === "jame").length;
+    setJame(jameCount);
   }, [eventsArr]);
 
   const calendar = useCalendarApp({
@@ -109,7 +119,7 @@ function CalendarApp() {
       <div className="flex max-w-6xl mx-auto justify-between mb-4">
         <Modal onEventsChange={(events) => setEventsArr(events)} />
         <ModalPessoas eventsArr={eventsArr} />
-        <ModalPrecos eventsArr={eventsArr} ana={ana} />
+        <ModalPrecos eventsArr={eventsArr} ana={ana} rafaEscola={rafaEscola} rafaResi={rafaResi} jame={jame}/>
       </div>
       <div className="max-w-6xl mx-auto">
         <ScheduleXCalendar calendarApp={calendar} />
