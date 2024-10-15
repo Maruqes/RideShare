@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 interface Event {
     id: string;
     name: string;
-    // Add other properties as needed
 }
 
 interface ModalPessoasProps {

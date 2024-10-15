@@ -45,22 +45,30 @@ const ModalPrecos: React.FC<ModalPrecosProps> = ({ eventsArr, ana, rafaEscola, r
                                                 <span className="text-lg font-semibold text-gray-700">Marques:</span>
                                                 <span className="text-xl font-bold text-gray-900">{(((eventsArr.length - 1) - ana - rafaEscola - rafaResi - jame) * 1.50).toFixed(2)}€</span>
                                             </div>
-                                            <div className="flex justify-between items-center mb-4">
-                                                <span className="text-lg font-semibold text-gray-700">Ana:</span>
-                                                <span className="text-xl font-bold text-gray-900">{(ana).toFixed(2)}€</span>
-                                            </div>
-                                            <div className="flex justify-between items-center mb-4">
-                                                <span className="text-lg font-semibold text-gray-700">Rafa Escola:</span>
-                                                <span className="text-xl font-bold text-gray-900">{(rafaEscola*0.11).toFixed(2)}€</span>
-                                            </div>
-                                            <div className="flex justify-between items-center mb-4">
-                                                <span className="text-lg font-semibold text-gray-700">Rafa Resi:</span>
-                                                <span className="text-xl font-bold text-gray-900">{(rafaResi*0.16).toFixed(2)}€</span>
-                                            </div>
-                                            <div className="flex justify-between items-center mb-4">
-                                                <span className="text-lg font-semibold text-gray-700">Jame:</span>
-                                                <span className="text-xl font-bold text-gray-900">{(jame*0.78).toFixed(2)}€</span>
-                                            </div>
+                                            {ana !== 0 && (
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <span className="text-lg font-semibold text-gray-700">Ana:</span>
+                                                    <span className="text-xl font-bold text-gray-900">{(ana).toFixed(2)}€</span>
+                                                </div>
+                                            )}
+                                            {rafaEscola !== 0 && (
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <span className="text-lg font-semibold text-gray-700">Rafa Escola:</span>
+                                                    <span className="text-xl font-bold text-gray-900">{(rafaEscola*0.11).toFixed(2)}€</span>
+                                                </div>
+                                            )}
+                                            {rafaResi !== 0 && (
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <span className="text-lg font-semibold text-gray-700">Rafa Resi:</span>
+                                                    <span className="text-xl font-bold text-gray-900">{(rafaResi*0.16).toFixed(2)}€</span>
+                                                </div>
+                                            )}
+                                            {jame !== 0 && (
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <span className="text-lg font-semibold text-gray-700">Jame:</span>
+                                                    <span className="text-xl font-bold text-gray-900">{(jame*0.78).toFixed(2)}€</span>
+                                                </div>
+                                            )}
                                             <hr className="my-4"/>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-lg font-semibold text-gray-700">Total (Ana e Marques):</span>
