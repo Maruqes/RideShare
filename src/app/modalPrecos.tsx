@@ -66,7 +66,7 @@ const ModalPrecos: React.FC<ModalPrecosProps> = ({ eventsArr, ana, rafaEscola, r
                                             {jame !== 0 && (
                                                 <div className="flex justify-between items-center mb-4">
                                                     <span className="text-lg font-semibold text-gray-700">Jame:</span>
-                                                    <span className="text-xl font-bold text-gray-900">{(jame*0.78).toFixed(2)}€</span>
+                                                    <span className="text-xl font-bold text-gray-900">{(jame*0.78).toFixed(2)}€</span> /* valor padrao 0.78€ */
                                                 </div>
                                             )}
                                             <hr className="my-4"/>
