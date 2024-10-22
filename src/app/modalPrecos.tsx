@@ -43,12 +43,12 @@ const ModalPrecos: React.FC<ModalPrecosProps> = ({ eventsArr, ana, rafaEscola, r
                                         <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
                                             <div className="flex justify-between items-center mb-4">
                                                 <span className="text-lg font-semibold text-gray-700">Marques:</span>
-                                                <span className="text-xl font-bold text-gray-900">{(((eventsArr.length - 1) - ana - rafaEscola - rafaResi - jame) * 1.50).toFixed(2)}€</span>
+                                                <span className="text-xl font-bold text-gray-900">{((((eventsArr.length - 1) - ana - rafaEscola - rafaResi - jame ) * 1.50) - 33).toFixed(2)}€</span>
                                             </div>
                                             {ana !== 0 && (
                                                 <div className="flex justify-between items-center mb-4">
                                                     <span className="text-lg font-semibold text-gray-700">Ana:</span>
-                                                    <span className="text-xl font-bold text-gray-900">{(ana).toFixed(2)}€</span>
+                                                    <span className="text-xl font-bold text-gray-900">{((ana) - 4).toFixed(2)}€</span>
                                                 </div>
                                             )}
                                             {rafaEscola !== 0 && (
@@ -72,7 +72,7 @@ const ModalPrecos: React.FC<ModalPrecosProps> = ({ eventsArr, ana, rafaEscola, r
                                             <hr className="my-4"/>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-lg font-semibold text-gray-700">Total (Ana e Marques):</span>
-                                                <span className="text-xl font-bold text-gray-900">{((((eventsArr.length - ana - rafaEscola - rafaResi - jame) - 1) * 1.50) + ana).toFixed(2)}€</span>
+                                                <span className="text-xl font-bold text-gray-900">{(((((eventsArr.length - ana - rafaEscola - rafaResi - jame) - 1) * 1.50) + ana) - 33 - 4).toFixed(2)}€</span>
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-lg font-semibold text-gray-700">Total Rafa:</span>
