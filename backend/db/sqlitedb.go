@@ -51,6 +51,20 @@ func DeletEvent(id int64) error {
 	return nil
 }
 
+func DeletPerson(id int64) error {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec("DELETE FROM person WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func UpdateEvent(id int64, title, start, end, description string) error {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
@@ -83,6 +97,26 @@ func GetEvent(id int64) (models.Event, error) {
 		return models.Event{}, err
 	}
 	return event, nil
+}
+
+func GetPerson(id int64) (models.Person, error) {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return models.Person{}, err
+	}
+	defer db.Close()
+
+	row := db.QueryRow("SELECT id, name, pricetopay FROM person WHERE id = ?", id)
+
+	var person models.Person
+	err = row.Scan(&person.ID, &person.Name, &person.TotalToPay)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return models.Person{}, nil
+		}
+		return models.Person{}, err
+	}
+	return person, nil
 }
 
 func GetAllEvents() ([]models.Event, error) {

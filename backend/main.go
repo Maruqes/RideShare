@@ -22,8 +22,10 @@ func main(){
 	r.Post("/createEvent", handlers.CreateEvent)
 	r.Put("/updateEvent", handlers.UpdateEvent)
 	r.Delete("/deleteEvent", handlers.DeleteEvent)
+	r.Delete("/deletePerson", handlers.DeletePerson)
 	r.Get("/getEvents", handlers.ListEvent)
 	r.Get("/getEventWithId/{id}", handlers.GetEvent)
+	r.Get("/getPersonWithId/{id}", handlers.GetPerson)
 	r.Post("/createPerson", handlers.CreatePerson)
 
 	fmt.Println("Listening on port ", configs.GetServerPort())
