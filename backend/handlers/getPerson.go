@@ -21,7 +21,7 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 
 	personRet, err := db.GetPerson(int64(id))
 	if err != nil {
-		log.Printf("Erro ao obter evento: %v", err)
+		log.Printf("Erro ao obter a pessoa: %v", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}

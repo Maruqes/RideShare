@@ -23,14 +23,14 @@ func CreateEventDB(title, start, end, description string) error {
 	return nil
 }
 
-func CreatePerson(name string, pricetopay int) error {
+func CreatePerson(name string, Pricetopay int) error {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO person (name, pricetopay) VALUES (?, ?)", name, pricetopay)
+	_, err = db.Exec("INSERT INTO person (name, pricetopay) VALUES (?, ?)", name, Pricetopay)
 	if err != nil {
 		return err
 	}
@@ -79,6 +79,20 @@ func UpdateEvent(id int64, title, start, end, description string) error {
 	return nil
 }
 
+func UpdatePerson(id int64, name string, pricetopay int) error {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec("UPDATE person SET name = ?, pricetopay = ? WHERE id = ?", name, pricetopay, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetEvent(id int64) (models.Event, error) {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
@@ -109,7 +123,7 @@ func GetPerson(id int64) (models.Person, error) {
 	row := db.QueryRow("SELECT id, name, pricetopay FROM person WHERE id = ?", id)
 
 	var person models.Person
-	err = row.Scan(&person.ID, &person.Name, &person.TotalToPay)
+	err = row.Scan(&person.ID, &person.Name, &person.Pricetopay)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return models.Person{}, nil
@@ -143,6 +157,30 @@ func GetAllEvents() ([]models.Event, error) {
 	return events, nil
 }
 
+func GetAllPersons() ([]models.Person, error) {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	rows, err := db.Query("SELECT id, name, pricetopay FROM person")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var persons []models.Person
+	for rows.Next() {
+		var person models.Person
+		if err := rows.Scan(&person.ID, &person.Name, &person.Pricetopay); err != nil {
+			return nil, err
+		}
+		persons = append(persons, person)
+	}
+	return persons, nil
+}
+
 func CreateAllTablesAndFile() {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
@@ -163,7 +201,7 @@ func CreateAllTablesAndFile() {
 		panic(err)
 	}
 
-	createTableSQL = `CREATE TABLE IF NOT EXISTS person (
+	createTableSQL = `CREATE TABLE IF NOT EXISTS persons (
 		"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,		
 		"name" TEXT,
 		"pricetopay" INTEGER
