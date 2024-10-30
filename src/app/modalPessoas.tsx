@@ -1,3 +1,4 @@
+import { get } from 'http';
 import React, { useState, useEffect } from 'react';
 
 interface Event {
@@ -5,14 +6,40 @@ interface Event {
     name: string;
 }
 
-interface ModalPessoasProps {
-    eventsArr: Event[];
-}
+type Person = {
+    id: string;
+    name: string;
+    pricetopay: number;
+};
 
-const ModalPessoas: React.FC<ModalPessoasProps> = ({ eventsArr }) => {
+interface ModalPessoasProps {}
+
+const ModalPessoas: React.FC<ModalPessoasProps> = () => {
     const [pessoas, setPessoas] = useState<string[]>([]);
+    const [pessoasArr, setPessoasArr] = useState<Person[]>([]);
     const [inputValue, setInputValue] = useState<string>('');
     const [isOpen, setIsOpen] = useState(false);
+    
+    useEffect(() => {
+        function getPessoas() {
+            fetch('http://localhost:9000/getPersons', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                setPessoasArr(data);
+            })
+            .catch(error => console.error('Error fetching persons:', error));
+        }
+        getPessoas();
+    }, []);
+
+    
+
 
     useEffect(() => {
         const storedPessoas = localStorage.getItem('pessoas');
@@ -20,6 +47,25 @@ const ModalPessoas: React.FC<ModalPessoasProps> = ({ eventsArr }) => {
             setPessoas(JSON.parse(storedPessoas));
         }
     }, []);
+
+    const handleTestRequest = async () => {
+        const response = await fetch('http://localhost:9000/createPerson', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                Name: inputValue,
+                pricetopay: '0',
+            }),
+        });
+
+        if (response.ok) {
+            console.log('Request successful');
+        } else {
+            console.error('Request failed');
+        }
+    };
 
     const handleAddPessoa = () => {
         if (inputValue.trim()) {
@@ -67,7 +113,18 @@ const ModalPessoas: React.FC<ModalPessoasProps> = ({ eventsArr }) => {
                                     </button>
                                 </li>
                             ))}
+                           {pessoasArr.map((person, index) => (
+                                <li key={index} className="flex justify-between items-center mb-2">
+                                    {person.name}
+                                    <button onClick={() => handleRemovePessoa(index)} className="bg-red-500 text-white p-2 rounded">
+                                        Apagar
+                                    </button>
+                                </li>
+                            ))}
                         </ul>
+                        <button onClick={handleTestRequest} className="bg-green-500 text-white p-2 rounded mt-4">
+                            Teste
+                        </button>
                         <button onClick={() => setIsOpen(false)} className="bg-gray-500 text-white p-2 rounded mt-4">
                             Fechar
                         </button>

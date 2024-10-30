@@ -118,7 +118,7 @@ function CalendarApp() {
     <div className="p-4 bg-white h-screen">
       <div className="flex max-w-6xl mx-auto justify-between mb-4">
         <Modal onEventsChange={(events) => setEventsArr(events)} />
-        <ModalPessoas eventsArr={eventsArr} />
+        <ModalPessoas />
         <ModalPrecos eventsArr={eventsArr} ana={ana} rafaEscola={rafaEscola} rafaResi={rafaResi} jame={jame}/>
       </div>
       <div className="max-w-6xl mx-auto">
