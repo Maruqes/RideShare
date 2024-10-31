@@ -16,6 +16,7 @@ import { createCurrentTimePlugin } from '@schedule-x/current-time';
 import Modal from './modal';
 import ModalPrecos from './modalPrecos';
 import ModalPessoas from './modalPessoas';
+import ModalRoutes from './modalRoutes';
 
 const eventsServicePlugin = createEventsServicePlugin();
 
@@ -115,22 +116,8 @@ function CalendarApp() {
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
     const today = date.toISOString().split('T')[0];
 
-    let eventExists = eventsArr.some(event => event.start === today || event.end === today);
-
-      const newEvent = {
-        id: "0",
-        title: 'Boleia 🏎️',
-        start: today,
-        name: 'Boleia',
-        description: "O marque veio",
-        end: today,
-        people: [
-          "Marques"
-        ]
-      };
 
       clear_all_events();
-      calendar.events.add(newEvent)
       call_backend_add_all_events();
       //chamar back 
   }, []);
@@ -140,6 +127,7 @@ function CalendarApp() {
       <div className="flex max-w-6xl mx-auto justify-between mb-4">
         <Modal onEventsChange={(events) => setEventsArr(events)} />
         <ModalPessoas />
+        <ModalRoutes />
         <ModalPrecos eventsArr={eventsArr}/>
       </div>
       <div className="max-w-6xl mx-auto">

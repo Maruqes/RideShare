@@ -11,6 +11,7 @@ import (
     "github.com/go-chi/cors"
 )
 
+
 func main() {
     db.CreateAllTablesAndFile()
 
@@ -42,6 +43,11 @@ func main() {
     r.Get("/getPersons", handlers.ListPerson)
     r.Get("/getEventWithId/{id}", handlers.GetEvent)
     r.Get("/getPersonWithId/{id}", handlers.GetPerson)
+
+    //criar rotas
+    r.Post("/createRoute", handlers.CreateRoute)
+    r.Delete("/deleteRoute", handlers.DeleteRoute)
+    r.Get("/getRoutes", handlers.GetRoutes)
 
     fmt.Println("Listening on port ", configs.GetServerPort())
     http.ListenAndServe(fmt.Sprintf(":%s", configs.GetServerPort()), r)

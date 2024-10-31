@@ -22,7 +22,7 @@ const ModalPrecos: React.FC<ModalPrecosProps> = ({ eventsArr }) => {
     return (
         <>
             <button 
-                className="corGeral text-white py-2 px-4 rounded" 
+                className="bg-gradient-to-r from-purple-500 to-purple-700 text-white py-3 px-6 rounded-full shadow-lg hover:from-purple-600 hover:to-purple-800 transition duration-300 transform hover:scale-105" 
                 onClick={handleShow}
             >
                 Despesas

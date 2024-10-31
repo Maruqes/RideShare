@@ -181,6 +181,60 @@ func GetAllPersons() ([]models.Person, error) {
 	return persons, nil
 }
 
+func CreateRoute(route models.Route) error {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec("INSERT INTO routes (name, start, end, distance, price) VALUES (?, ?, ?, ?, ?)",route.Name, route.StartName, route.EndName, route.Distance, route.Price)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteRoute(id int64) error {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec("DELETE FROM routes WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+	return nil
+}
+
+
+func GetAllRoutes() ([]models.Route, error) {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	rows, err := db.Query("SELECT * FROM routes")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var routes []models.Route
+	for rows.Next() {
+		var route models.Route
+		if err := rows.Scan(&route.ID, &route.Name, &route.StartName,&route.EndName,&route.Distance,&route.Price); err != nil {
+			return nil, err
+		}
+		routes = append(routes, route)
+	}
+	return routes, nil
+}
+
 func CreateAllTablesAndFile() {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
@@ -206,6 +260,20 @@ func CreateAllTablesAndFile() {
 		"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,		
 		"name" TEXT,
 		"pricetopay" INTEGER
+	);`
+
+	_, err = db.Exec(createTableSQL)
+	if err != nil {
+		panic(err)
+	}
+
+	createTableSQL = `CREATE TABLE IF NOT EXISTS routes (
+		"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,		
+		"name" TEXT,
+		"start" TEXT,
+		"end" TEXT,
+		"distance" TEXT,
+		"price" INTEGER
 	);`
 
 	_, err = db.Exec(createTableSQL)

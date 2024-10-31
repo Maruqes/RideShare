@@ -18,9 +18,8 @@ type Person struct {
 type Route struct {
 	ID int64 `json:"id"`
 	Name string `json:"name"`
-	StarName string `json:"startName"`
+	StartName string `json:"startName"`
 	EndName string `json:"endName"`
-	Distance int `json:"distance"`
-	TravelTime int `json:"travelTime"`
+	Distance string `json:"distance"`
 	Price int `json:"price"`
 }

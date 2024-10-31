@@ -37,16 +37,6 @@ const ModalPessoas: React.FC<ModalPessoasProps> = () => {
         getPessoas();
     }, []);
 
-    
-
-
-    useEffect(() => {
-        const storedPessoas = localStorage.getItem('pessoas');
-        if (storedPessoas) {
-            setPessoas(JSON.parse(storedPessoas));
-        }
-    }, []);
-
     const handleCreatePerson = async () => {
         const response = await fetch('http://localhost:9000/createPerson', {
             method: 'POST',
@@ -83,39 +73,39 @@ const ModalPessoas: React.FC<ModalPessoasProps> = () => {
 
     return (
         <div>
-            <button onClick={() => setIsOpen(true)} className="corGeral text-white p-2 rounded">
+            <button onClick={() => setIsOpen(true)} className="bg-gradient-to-r from-purple-500 to-purple-700 text-white py-3 px-6 rounded-full shadow-lg hover:from-purple-600 hover:to-purple-800 transition duration-300 transform hover:scale-105">
                 + Gerir Pessoas
             </button>
 
             {isOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-                    <div className="bg-white p-8 rounded-lg w-full max-w-2xl">
-                        <h2 className="text-2xl font-bold mb-4">Gerir Pessoas</h2>
-                        <div className="input-group mb-4 flex">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-8 rounded-lg w-full max-w-lg shadow-lg">
+                        <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">Gerir Pessoas</h2>
+                        <div className="input-group mb-6 flex">
                             <input
                                 type="text"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 placeholder="Adicionar pessoa"
-                                className="w-full p-2 border border-gray-300 rounded mb-2 text-black flex-grow"
+                                className="w-full p-3 border border-gray-300 rounded-l-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <button onClick={handleCreatePerson} className="bg-blue-500 text-white p-2 rounded ml-2">
+                            <button onClick={handleCreatePerson} className="bg-purple-600 text-white p-3 rounded-r-lg hover:bg-purple-700 transition duration-300">
                                 Adicionar
                             </button>
                         </div>
-                        <div className="max-h-64 overflow-y-auto">
-                            <ul>
+                        <div className="max-h-64 overflow-y-auto mb-6">
+                            <ul className="divide-y divide-gray-200">
                                {pessoasArr && pessoasArr.map((person, index) => (
-                                    <li key={index} className="flex justify-between items-center mb-2">
-                                        {person.name}
-                                        <button onClick={() => handleRemovePessoa(person.id)} className="bg-red-500 text-white p-2 rounded">
+                                    <li key={index} className="flex justify-between items-center py-2 px-4 hover:bg-gray-100 transition duration-300">
+                                        <span className="text-gray-800">{person.name}</span>
+                                        <button onClick={() => handleRemovePessoa(person.id)} className="bg-red-600 text-white p-2 rounded hover:bg-red-700 transition duration-300">
                                             Apagar
                                         </button>
                                     </li>
                                 ))}
                             </ul>
                         </div>
-                        <button onClick={() => setIsOpen(false)} className="bg-gray-500 text-white p-2 rounded mt-4">
+                        <button onClick={() => setIsOpen(false)} className="bg-gray-300 text-gray-700 p-2 rounded mt-4 shadow-lg hover:bg-gray-400 transition duration-300 transform">
                             Fechar
                         </button>
                     </div>

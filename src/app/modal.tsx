@@ -116,48 +116,51 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
 
     return (
         <div>
-            <button onClick={() => setIsOpen(true)} className="corGeral text-white p-2 rounded">
+            <button onClick={() => setIsOpen(true)} className="bg-gradient-to-r from-purple-500 to-purple-700 text-white py-3 px-6 rounded-full shadow-lg hover:from-purple-600 hover:to-purple-800 transition duration-300 transform hover:scale-105">
                 + Gerir Eventos
             </button>
 
             {isOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-                    <div className="bg-white p-4 rounded">
-                        <h2 className="text-2xl font-bold mb-4">Gerir Pessoas</h2>
-                        <div className="mb-4">
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Gerir Eventos</h2>
+                        <div className="mb-6">
+                            <label htmlFor="personSelect" className="block text-sm font-medium text-gray-700 mb-2">Selecione uma pessoa</label>
                             <select
                                 id="personSelect"
                                 value={selectedPerson}
                                 onChange={(e) => setSelectedPerson(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded mb-2 text-black"
+                                className="w-full p-3 border border-gray-300 rounded-lg mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="">Selecione uma pessoa</option>
                                 {people && people.map(person => (
                                     <option key={person.id} value={person.name + "//&&//" + person.id}>{person.name}</option>
                                 ))}
                             </select>
+                            <label htmlFor="eventDate" className="block text-sm font-medium text-gray-700 mb-2">Data início</label>
                             <input
                                 type="date"
                                 id="eventDate"
-                                placeholder="Data inicio"
-                                className="w-full p-2 border border-gray-300 rounded mb-2 text-black"
+                                className="w-full p-3 border border-gray-300 rounded-lg mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
+                            <label htmlFor="eventDateEnd" className="block text-sm font-medium text-gray-700 mb-2">Data fim</label>
                             <input
                                 type="date"
                                 id="eventDateEnd"
-                                placeholder="Data fim"
-                                className="w-full p-2 border border-gray-300 rounded mb-2 text-black"
+                                className="w-full p-3 border border-gray-300 rounded-lg mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
-                        <button onClick={handleAddEvent} className="bg-blue-500 text-white p-2 rounded">
-                            Adicionar
-                        </button>
-                        <button onClick={handleDeleteEvent} className="bg-red-500 text-white p-2 rounded ml-2">
-                            Apagar
-                        </button>
-                        <button onClick={() => setIsOpen(false)} className="bg-gray-500 text-white p-2 rounded ml-2">
-                            Fechar
-                        </button>
+                        <div className="flex justify-end space-x-4">
+                            <button onClick={handleAddEvent} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                Adicionar
+                            </button>
+                            <button onClick={handleDeleteEvent} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                Apagar
+                            </button>
+                            <button onClick={() => setIsOpen(false)} className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                Fechar
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
