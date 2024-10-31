@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/JotaBarbosaDev/RideShare/backend/db"
-	"github.com/JotaBarbosaDev/RideShare/backend/models"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -23,10 +22,6 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Erro ao obter evento: %v", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
-	if (eventRet == models.Event{}) {
-		http.Error(w, "Event not found", http.StatusNotFound)
 		return
 	}
 
