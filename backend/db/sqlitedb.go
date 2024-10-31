@@ -9,28 +9,15 @@ import (
 
 // Connect to the SQLite database
 
-func CreateEventDB(title, start, end, description, personID string) error {
+// EVENTS
+func CreateEventDB(title, start, end, description string, personsIDs string, routeID string) error {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO events (title, start, end, description, personID) VALUES (?, ?, ?, ?, ?)", title, start, end, description, personID)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func CreatePerson(name string, Pricetopay int) error {
-	db, err := sql.Open("sqlite3", "./rideShare.db")
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	_, err = db.Exec("INSERT INTO persons (name, pricetopay) VALUES (?, ?)", name, Pricetopay)
+	_, err = db.Exec("INSERT INTO events (title, start, end, description, personsIDs, routeID) VALUES (?, ?, ?, ?, ?, ?)", title, start, end, description, personsIDs, routeID)
 	if err != nil {
 		return err
 	}
@@ -50,49 +37,6 @@ func DeletEvent(id int64) error {
 	}
 	return nil
 }
-
-func DeletPerson(id int64) error {
-	db, err := sql.Open("sqlite3", "./rideShare.db")
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	_, err = db.Exec("DELETE FROM persons WHERE id = ?", id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func UpdateEvent(id int64, title, start, end, description string) error {
-	db, err := sql.Open("sqlite3", "./rideShare.db")
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	_, err = db.Exec("UPDATE events SET title = ?, start = ?, end = ?, description = ? WHERE id = ?", title, start, end, description, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func UpdatePerson(id int64, name string, pricetopay int) error {
-	db, err := sql.Open("sqlite3", "./rideShare.db")
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	_, err = db.Exec("UPDATE persons SET name = ?, pricetopay = ? WHERE id = ?", name, pricetopay, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func GetEvent(id int64) (models.Event, error) {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
@@ -113,6 +57,78 @@ func GetEvent(id int64) (models.Event, error) {
 	return event, nil
 }
 
+func GetAllEvents() ([]models.Event, error) {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	rows, err := db.Query("SELECT id, title, start, end, description, personsIDs, routeID FROM events")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []models.Event
+	for rows.Next() {
+		var event models.Event
+		if err := rows.Scan(&event.ID, &event.Title, &event.Start, &event.End, &event.Description, &event.PersonsIDs, &event.RouteID); err != nil {
+			return nil, err
+		}
+		events = append(events, event)
+	}
+	return events, nil
+}
+
+func CheckIfPersonExists(id int64) bool {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return false
+	}
+	defer db.Close()
+
+	row := db.QueryRow("SELECT id FROM persons WHERE id = ?", id)
+
+	var person models.Person
+	err = row.Scan(&person.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false
+		}
+		return false
+	}
+	return true
+}
+
+// PERSON
+func CreatePerson(name string, Pricetopay int) error {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec("INSERT INTO persons (name, pricetopay) VALUES (?, ?)", name, Pricetopay)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeletPerson(id int64) error {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec("DELETE FROM persons WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func GetPerson(id int64) (models.Person, error) {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
@@ -131,30 +147,6 @@ func GetPerson(id int64) (models.Person, error) {
 		return models.Person{}, err
 	}
 	return person, nil
-}
-
-func GetAllEvents() ([]models.Event, error) {
-	db, err := sql.Open("sqlite3", "./rideShare.db")
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
-	rows, err := db.Query("SELECT id, title, start, end, description, personID FROM events")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var events []models.Event
-	for rows.Next() {
-		var event models.Event
-		if err := rows.Scan(&event.ID, &event.Title, &event.Start, &event.End, &event.Description, &event.PersonID); err != nil {
-			return nil, err
-		}
-		events = append(events, event)
-	}
-	return events, nil
 }
 
 func GetAllPersons() ([]models.Person, error) {
@@ -181,6 +173,41 @@ func GetAllPersons() ([]models.Person, error) {
 	return persons, nil
 }
 
+func CheckIfRouteExists(id int64) bool {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return false
+	}
+	defer db.Close()
+
+	row := db.QueryRow("SELECT id FROM routes WHERE id = ?", id)
+
+	var route models.Route
+	err = row.Scan(&route.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false
+		}
+		return false
+	}
+	return true
+}
+
+func PayPessoa(id int64, dindin int64) error {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec("UPDATE persons SET pricetopay = pricetopay + ? WHERE id = ?", dindin, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ROUTES
 func CreateRoute(route models.Route) error {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
@@ -188,7 +215,7 @@ func CreateRoute(route models.Route) error {
 	}
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO routes (name, start, end, distance, price) VALUES (?, ?, ?, ?, ?)",route.Name, route.StartName, route.EndName, route.Distance, route.Price)
+	_, err = db.Exec("INSERT INTO routes (name, start, end, distance, price) VALUES (?, ?, ?, ?, ?)", route.Name, route.StartName, route.EndName, route.Distance, route.Price)
 	if err != nil {
 		return err
 	}
@@ -207,9 +234,7 @@ func DeleteRoute(id int64) error {
 		return err
 	}
 	return nil
-	return nil
 }
-
 
 func GetAllRoutes() ([]models.Route, error) {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
@@ -227,12 +252,32 @@ func GetAllRoutes() ([]models.Route, error) {
 	var routes []models.Route
 	for rows.Next() {
 		var route models.Route
-		if err := rows.Scan(&route.ID, &route.Name, &route.StartName,&route.EndName,&route.Distance,&route.Price); err != nil {
+		if err := rows.Scan(&route.ID, &route.Name, &route.StartName, &route.EndName, &route.Distance, &route.Price); err != nil {
 			return nil, err
 		}
 		routes = append(routes, route)
 	}
 	return routes, nil
+}
+
+func CheckIfEventExists(id int64) bool {
+	db, err := sql.Open("sqlite3", "./rideShare.db")
+	if err != nil {
+		return false
+	}
+	defer db.Close()
+
+	row := db.QueryRow("SELECT id FROM events WHERE id = ?", id)
+
+	var event models.Event
+	err = row.Scan(&event.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false
+		}
+		return false
+	}
+	return true
 }
 
 func CreateAllTablesAndFile() {
@@ -248,7 +293,8 @@ func CreateAllTablesAndFile() {
 		"start" TEXT,
 		"end" TEXT,
 		"description" TEXT,
-		"personID" TEXT
+		"personsIDs" TEXT,
+		"routeID" TEXT
 	);`
 
 	_, err = db.Exec(createTableSQL)
