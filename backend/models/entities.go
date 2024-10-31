@@ -6,6 +6,7 @@ type Event struct {
 	Start string `json:"start"`
 	End string `json:"end"`
 	Description string `json:"description"`
+	PersonID string `json:"personID"`
 }		
 
 type Person struct {

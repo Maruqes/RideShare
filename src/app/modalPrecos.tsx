@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 
 interface ModalPrecosProps {
     eventsArr: any[];
-    ana: number;
-    rafaEscola: number;
-    rafaResi: number;
-    jame: number;
 }
 
 //Marques - 33€   Era 33 mas pagou 40€
@@ -16,7 +12,7 @@ interface ModalPrecosProps {
 // Ana 2€
 // RAFA 0€
 
-const ModalPrecos: React.FC<ModalPrecosProps> = ({ eventsArr, ana, rafaEscola, rafaResi, jame }) => {
+const ModalPrecos: React.FC<ModalPrecosProps> = ({ eventsArr }) => {
 
     const [show, setShow] = useState(false);
 
@@ -49,43 +45,7 @@ const ModalPrecos: React.FC<ModalPrecosProps> = ({ eventsArr, ana, rafaEscola, r
                                             Despesas
                                         </h3>
                                         <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-                                            <div className="flex justify-between items-center mb-4">
-                                                <span className="text-lg font-semibold text-gray-700">Marques:</span>
-                                                <span className="text-xl font-bold text-gray-900">{((((eventsArr.length - 1) - ana ) * 1.50) - (0.50 * ana)  ).toFixed(2)}€</span>
-                                            </div>
-                                            {ana !== 0 && (
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <span className="text-lg font-semibold text-gray-700">Ana:</span>
-                                                    <span className="text-xl font-bold text-gray-900">{((ana)).toFixed(2)}€</span>
-                                                </div>
-                                            )}
-                                            {rafaEscola !== 0 && (
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <span className="text-lg font-semibold text-gray-700">Rafa Escola:</span>
-                                                    <span className="text-xl font-bold text-gray-900">{(rafaEscola*0.11).toFixed(2)}€</span>
-                                                </div>
-                                            )}
-                                            {rafaResi !== 0 && (
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <span className="text-lg font-semibold text-gray-700">Rafa Resi:</span>
-                                                    <span className="text-xl font-bold text-gray-900">{(rafaResi*0.16).toFixed(2)}€</span>
-                                                </div>
-                                            )}
-                                            {jame !== 0 && (
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <span className="text-lg font-semibold text-gray-700">Jame:</span>
-                                                    <span className="text-xl font-bold text-gray-900">{(jame*0.78).toFixed(2)}€</span> /* valor padrao 0.78€ */
-                                                </div>
-                                            )}
-                                            <hr className="my-4"/>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-lg font-semibold text-gray-700">Total (Ana e Marques):</span>
-                                                <span className="text-xl font-bold text-gray-900">{(((((eventsArr.length - ana) - 1) * 1.50)) - (0.50 * ana) + ana).toFixed(2)}€</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-lg font-semibold text-gray-700">Total Rafa:</span>
-                                                <span className="text-xl font-bold text-gray-900">{((rafaEscola * 0.11) + (rafaResi * 0.16)).toFixed(2)}€</span>
-                                            </div>
+                                           
                                         </div>
                                     </div>
                                 </div>

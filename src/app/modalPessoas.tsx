@@ -20,21 +20,20 @@ const ModalPessoas: React.FC<ModalPessoasProps> = () => {
     const [inputValue, setInputValue] = useState<string>('');
     const [isOpen, setIsOpen] = useState(false);
     
+    function getPessoas() {
+        fetch('http://localhost:9000/getPersons', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            setPessoasArr(data);
+        })
+        .catch(error => console.error('Error fetching persons:', error));
+    }
     useEffect(() => {
-        function getPessoas() {
-            fetch('http://localhost:9000/getPersons', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                setPessoasArr(data);
-            })
-            .catch(error => console.error('Error fetching persons:', error));
-        }
         getPessoas();
     }, []);
 
@@ -48,7 +47,7 @@ const ModalPessoas: React.FC<ModalPessoasProps> = () => {
         }
     }, []);
 
-    const handleTestRequest = async () => {
+    const handleCreatePerson = async () => {
         const response = await fetch('http://localhost:9000/createPerson', {
             method: 'POST',
             headers: {
@@ -62,25 +61,25 @@ const ModalPessoas: React.FC<ModalPessoasProps> = () => {
 
         if (response.ok) {
             console.log('Request successful');
+            getPessoas();
         } else {
             console.error('Request failed');
         }
     };
 
-    const handleAddPessoa = () => {
-        if (inputValue.trim()) {
-            const newPessoas = [...pessoas, inputValue.trim()];
-            setPessoas(newPessoas);
-            localStorage.setItem('pessoas', JSON.stringify(newPessoas));
-            setInputValue('');
-        }
-    };
+    const handleRemovePessoa = async (id: string) => { //deletePerson?ID=4
+        const response = await fetch(`http://localhost:9000/deletePerson?ID=${id}`, {
+            method: 'DELETE',
+        });
 
-    const handleRemovePessoa = (index: number) => {
-        const newPessoas = pessoas.filter((_, i) => i !== index);
-        setPessoas(newPessoas);
-        localStorage.setItem('pessoas', JSON.stringify(newPessoas));
-    };
+        if (response.ok) {
+            console.log('Request successful');
+            getPessoas();
+        } else {
+            console.error('Request failed');
+        }
+    }
+
 
     return (
         <div>
@@ -100,31 +99,22 @@ const ModalPessoas: React.FC<ModalPessoasProps> = () => {
                                 placeholder="Adicionar pessoa"
                                 className="w-full p-2 border border-gray-300 rounded mb-2 text-black flex-grow"
                             />
-                            <button onClick={handleAddPessoa} className="bg-blue-500 text-white p-2 rounded ml-2">
+                            <button onClick={handleCreatePerson} className="bg-blue-500 text-white p-2 rounded ml-2">
                                 Adicionar
                             </button>
                         </div>
-                        <ul>
-                            {pessoas.map((pessoa, index) => (
-                                <li key={index} className="flex justify-between items-center mb-2">
-                                    {pessoa}
-                                    <button onClick={() => handleRemovePessoa(index)} className="bg-red-500 text-white p-2 rounded">
-                                        Apagar
-                                    </button>
-                                </li>
-                            ))}
-                           {pessoasArr.map((person, index) => (
-                                <li key={index} className="flex justify-between items-center mb-2">
-                                    {person.name}
-                                    <button onClick={() => handleRemovePessoa(index)} className="bg-red-500 text-white p-2 rounded">
-                                        Apagar
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                        <button onClick={handleTestRequest} className="bg-green-500 text-white p-2 rounded mt-4">
-                            Teste
-                        </button>
+                        <div className="max-h-64 overflow-y-auto">
+                            <ul>
+                               {pessoasArr && pessoasArr.map((person, index) => (
+                                    <li key={index} className="flex justify-between items-center mb-2">
+                                        {person.name}
+                                        <button onClick={() => handleRemovePessoa(person.id)} className="bg-red-500 text-white p-2 rounded">
+                                            Apagar
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                         <button onClick={() => setIsOpen(false)} className="bg-gray-500 text-white p-2 rounded mt-4">
                             Fechar
                         </button>

@@ -29,28 +29,9 @@ interface Event {
   people: string[];
 }
 
+
 function CalendarApp() {
-  const [ana, setAna] = useState(0);
-  const [eventsArr, setEventsArr] = useState<Event[]>(() => {
-    const storedArray = typeof window !== "undefined" ? localStorage.getItem("ourEvents") : null;
-    return storedArray ? JSON.parse(storedArray) : [];
-  });
-
-  const [rafaEscola, setRafaEscola] = useState(0);
-  const [rafaResi, setRafaResi] = useState(0);
-  const [jame, setJame] = useState(0);
-
-  useEffect(() => {
-    localStorage.setItem("ourEvents", JSON.stringify(eventsArr));
-    const anaCount = eventsArr.filter(event => event.title.toLowerCase() === "ana").length;
-    setAna(anaCount);
-    const rafaEscolaCount = eventsArr.filter(event => event.title.toLowerCase() === "rafa escola").length;
-    setRafaEscola(rafaEscolaCount);
-    const rafaResiCount = eventsArr.filter(event => event.title.toLowerCase() === "rafa resi").length;
-    setRafaResi(rafaResiCount);
-    const jameCount = eventsArr.filter(event => event.title.toLowerCase() === "jame").length;
-    setJame(jameCount);
-  }, [eventsArr]);
+  const [eventsArr, setEventsArr] = useState<Event[]>([]);
 
   const calendar = useCalendarApp({
     defaultView: 'monthAgenda',
@@ -80,6 +61,49 @@ function CalendarApp() {
     ],
   });
 
+  function clear_all_events(){
+    let events_del = calendar.events.getAll();
+
+    for(let i = 0; i < events_del.length;i++)
+    {
+      calendar.events.remove(events_del[i].id)
+    }
+  }
+  
+
+  function call_backend_add_all_events(){
+      fetch('http://localhost:9000/getEvents', {
+          method: 'GET',
+          headers: {
+              'Accept': 'application/json',
+          },
+      })
+      .then(response => response.json())
+      .then(data => {
+        clear_all_events();
+
+          for(let i =0;i < data.length; i++)
+          {
+            const newEvent = {
+              id: data[i].id,
+              title: data[i].title,
+              start: data[i].start,
+              name: data[i].title,
+              description: data[i].description,
+              end: data[i].end,
+              people: [
+                data[i].title
+              ]
+            };
+            calendar.events.add(newEvent)
+          }
+          setEventsArr(data);
+      })
+      .catch(error => console.error('Error fetching persons:', error));
+  }
+
+
+ 
   useEffect(() => {
     const date = new Date();
     const dayOfWeek = date.getDay(); 
@@ -93,25 +117,22 @@ function CalendarApp() {
 
     let eventExists = eventsArr.some(event => event.start === today || event.end === today);
 
-    if (!eventExists) {
       const newEvent = {
-        id: (eventsArr.length + 1).toString(),
+        id: "0",
         title: 'Boleia 🏎️',
         start: today,
         name: 'Boleia',
         description: "O marque veio",
         end: today,
         people: [
-          "Jota",
           "Marques"
         ]
       };
-      setEventsArr(prevEvents => {
-        const updatedEventsArr = [...prevEvents, newEvent];
-        localStorage.setItem("ourEvents", JSON.stringify(updatedEventsArr));
-        return updatedEventsArr;
-      });
-    }
+
+      clear_all_events();
+      calendar.events.add(newEvent)
+      call_backend_add_all_events();
+      //chamar back 
   }, []);
 
   return (
@@ -119,7 +140,7 @@ function CalendarApp() {
       <div className="flex max-w-6xl mx-auto justify-between mb-4">
         <Modal onEventsChange={(events) => setEventsArr(events)} />
         <ModalPessoas />
-        <ModalPrecos eventsArr={eventsArr} ana={ana} rafaEscola={rafaEscola} rafaResi={rafaResi} jame={jame}/>
+        <ModalPrecos eventsArr={eventsArr}/>
       </div>
       <div className="max-w-6xl mx-auto">
         <ScheduleXCalendar calendarApp={calendar} />

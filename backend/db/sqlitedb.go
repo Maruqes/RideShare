@@ -9,14 +9,14 @@ import (
 
 // Connect to the SQLite database
 
-func CreateEventDB(title, start, end, description string) error {
+func CreateEventDB(title, start, end, description, personID string) error {
 	db, err := sql.Open("sqlite3", "./rideShare.db")
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO events (title, start, end, description) VALUES (?, ?, ?, ?)", title, start, end, description)
+	_, err = db.Exec("INSERT INTO events (title, start, end, description, personID) VALUES (?, ?, ?, ?, ?)", title, start, end, description, personID)
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func CreatePerson(name string, Pricetopay int) error {
 	}
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO person (name, pricetopay) VALUES (?, ?)", name, Pricetopay)
+	_, err = db.Exec("INSERT INTO persons (name, pricetopay) VALUES (?, ?)", name, Pricetopay)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func DeletPerson(id int64) error {
 	}
 	defer db.Close()
 
-	_, err = db.Exec("DELETE FROM person WHERE id = ?", id)
+	_, err = db.Exec("DELETE FROM persons WHERE id = ?", id)
 	if err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func UpdatePerson(id int64, name string, pricetopay int) error {
 	}
 	defer db.Close()
 
-	_, err = db.Exec("UPDATE person SET name = ?, pricetopay = ? WHERE id = ?", name, pricetopay, id)
+	_, err = db.Exec("UPDATE persons SET name = ?, pricetopay = ? WHERE id = ?", name, pricetopay, id)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func GetPerson(id int64) (models.Person, error) {
 	}
 	defer db.Close()
 
-	row := db.QueryRow("SELECT id, name, pricetopay FROM person WHERE id = ?", id)
+	row := db.QueryRow("SELECT id, name, pricetopay FROM persons WHERE id = ?", id)
 
 	var person models.Person
 	err = row.Scan(&person.ID, &person.Name, &person.Pricetopay)
@@ -140,7 +140,7 @@ func GetAllEvents() ([]models.Event, error) {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, title, start, end, description FROM events")
+	rows, err := db.Query("SELECT id, title, start, end, description, personID FROM events")
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +149,7 @@ func GetAllEvents() ([]models.Event, error) {
 	var events []models.Event
 	for rows.Next() {
 		var event models.Event
-		if err := rows.Scan(&event.ID, &event.Title, &event.Start, &event.End, &event.Description); err != nil {
+		if err := rows.Scan(&event.ID, &event.Title, &event.Start, &event.End, &event.Description, &event.PersonID); err != nil {
 			return nil, err
 		}
 		events = append(events, event)
@@ -164,7 +164,7 @@ func GetAllPersons() ([]models.Person, error) {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, name, pricetopay FROM person")
+	rows, err := db.Query("SELECT id, name, pricetopay FROM persons")
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,8 @@ func CreateAllTablesAndFile() {
 		"title" TEXT,
 		"start" TEXT,
 		"end" TEXT,
-		"description" TEXT
+		"description" TEXT,
+		"personID" TEXT
 	);`
 
 	_, err = db.Exec(createTableSQL)

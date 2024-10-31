@@ -16,10 +16,11 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	event.End = r.FormValue("End")
 	event.Description = r.FormValue("Description")
 	event.Title = r.FormValue("Title")
+	event.PersonID = r.FormValue("PersonID")
 
 	fmt.Println(event)
 
-	err := db.CreateEventDB(event.Title, event.Start, event.End, event.Description)
+	err := db.CreateEventDB(event.Title, event.Start, event.End, event.Description, event.PersonID)
 	if err != nil {
 		http.Error(w, "Erro ao criar registo", http.StatusInternalServerError)
 		return
