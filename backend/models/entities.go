@@ -15,7 +15,7 @@ type Event struct {
 	Start       string `json:"start"`
 	End         string `json:"end"`
 	Description string `json:"description"`
-	PersonsIDs  string `json:"personID"`
+	PersonsIDs  string `json:"personsID"`
 	RouteID     string `json:"routeID"`
 }
 

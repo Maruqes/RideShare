@@ -56,7 +56,6 @@ const ModalRoutes: React.FC<ModalRoutesProps> = () => {
 
         if (response.ok) {
             console.log('Request successful');
-            getRoutes();
         } else {
             console.error('Request failed');
         }
@@ -69,7 +68,6 @@ const ModalRoutes: React.FC<ModalRoutesProps> = () => {
 
          if (response.ok) {
              console.log('Request successful');
-             getRoutes();
          } else {
              console.error('Request failed');
         }

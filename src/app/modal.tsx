@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 
 type Person = {
     id: string;
@@ -38,15 +38,34 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
     }
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            //call ao backend /getPersons
-            getPessoas();
-        }
-    }, []);
-
-    useEffect(() => {
         onEventsChange(eventsArr);
+        setSelectedPerson([]);
     }, [eventsArr, onEventsChange]);
+
+   
+
+
+    function getRoutes() {
+        fetch('http://localhost:9000/getRoutes', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            setRoutes(data);
+        })
+        .catch(error => console.error('Error fetching routes:', error));
+    }
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            //call ao backend /getRoutes
+            getRoutes();
+            getPessoas();
+            setSelectedPerson([]);
+        }
+    }, [])
 
 const callBackEndAddEvento = async (title:string, start:string, end:string,desc:string, person_id:string, selectedRoute:string) => {
     const response = await fetch('http://localhost:9000/createEvent', {
@@ -55,12 +74,12 @@ const callBackEndAddEvento = async (title:string, start:string, end:string,desc:
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            start: start,
-            end: end,
-            description: desc,
-            title: title,
-            personId: person_id,
-            routeId: selectedRoute,
+            Start: start,
+            End: end,
+            Description: desc,
+            Title: title,
+            personsID: person_id,
+            RouteID: selectedRoute,
         }),
     });
 
@@ -82,13 +101,23 @@ const callBackEndAddEvento = async (title:string, start:string, end:string,desc:
         }
     
         if (selectedPerson && selectedPerson.length > 0) {
+            let title = '';
+            let personsID = '';
             selectedPerson.forEach(person => {
-                const personManhosa = person.split("//&&//");
-                callBackEndAddEvento(personManhosa[0], eventDate, eventDateEnd === '' ? eventDate : eventDateEnd, "Não pago", personManhosa[1], selectedRoute);
+                console.log(person);    
+                title += person.split("//&&//")[0] + ' & ';
+                personsID += person.split("//&&//")[1] + '//';
             });
+            title = title.slice(0, -3);
+            personsID = personsID.slice(0, -2);
+
+            console.log(title);
+            console.log(personsID);
+            callBackEndAddEvento(title, eventDate, eventDateEnd === '' ? eventDate : eventDateEnd, "Não pago", personsID, selectedRoute);
         } else {
             console.log('Person selection is required');
         }
+        window.location.reload();
     };
 
     async function deleteFOdase( id:string)
@@ -133,9 +162,14 @@ const callBackEndAddEvento = async (title:string, start:string, end:string,desc:
         });
     };
 
+    function handleOpenModal() {
+        setIsOpen(true);
+        setSelectedPerson([]);
+    }
+
     return (
         <div>
-            <button onClick={() => setIsOpen(true)} className="bg-gradient-to-r from-purple-500 to-purple-700 text-white py-3 px-6 rounded-full shadow-lg hover:from-purple-600 hover:to-purple-800 transition duration-300 transform hover:scale-105">
+            <button onClick={handleOpenModal} className="bg-gradient-to-r from-purple-500 to-purple-700 text-white py-3 px-6 rounded-full shadow-lg hover:from-purple-600 hover:to-purple-800 transition duration-300 transform hover:scale-105">
                 + Gerir Eventos
             </button>
 
