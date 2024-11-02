@@ -25,14 +25,29 @@ interface Event {
   title: string;
   start: string;
   end: string;
-  name: string;
   description: string;
-  people: string[];
 }
 
 
 function CalendarApp() {
-  const [eventsArr, setEventsArr] = useState<Event[]>([]);
+  let eventsArr: Event[] = [];
+
+
+  function clear_all_events(){
+    eventsArr = [];
+    calendar.events.getAll().forEach((event) => {
+      calendar.events.remove(event.id);
+    });
+  }
+
+
+  function setEventsArr(events: Event[]) {
+    clear_all_events();
+    eventsArr = events;
+    for (let i = 0; i < eventsArr.length; i++) {
+      calendar.events.add(eventsArr[i]);
+    }
+  }
 
   const calendar = useCalendarApp({
     defaultView: 'monthAgenda',
@@ -56,22 +71,12 @@ function CalendarApp() {
       createEventModalPlugin(),
       createDragAndDropPlugin(),
       createEventRecurrencePlugin(),
-      createEventsServicePlugin(),
-      createCurrentTimePlugin(),
       eventsServicePlugin,
+      createCurrentTimePlugin(),
     ],
   });
 
-  function clear_all_events(){
-    let events_del = calendar.events.getAll();
-
-    for(let i = 0; i < events_del.length;i++)
-    {
-      calendar.events.remove(events_del[i].id)
-    }
-  }
   
-
   function call_backend_add_all_events(){
       fetch('http://localhost:9000/getEvents', {
           method: 'GET',
@@ -81,46 +86,34 @@ function CalendarApp() {
       })
       .then(response => response.json())
       .then(data => {
-        clear_all_events();
-
-          for(let i =0;i < data.length; i++)
-          {
-            const newEvent = {
-              id: data[i].id,
-              title: data[i].title,
-              start: data[i].start,
-              name: data[i].title,
-              description: data[i].description,
-              end: data[i].end,
-              people: [
-                data[i].title
-              ]
-            };
-            calendar.events.add(newEvent)
+        
+          if (data && Array.isArray(data)) {
+            const newEvents = data.map(event => ({
+              id: event.id.toString(),
+              title: event.title,
+              start: event.start,
+              end: event.end,
+              description: event.description
+            }));
+            setEventsArr(newEvents);
+          } else {
+            console.error('Invalid data received');
+            setEventsArr([]);
           }
-          setEventsArr(data);
-      })
-      .catch(error => console.error('Error fetching persons:', error));
+      });
   }
 
 
+  
  
   useEffect(() => {
     const date = new Date();
-    const dayOfWeek = date.getDay(); 
-    
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
-      return;
-    }
-
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    const today = date.toISOString().split('T')[0];
-
-
-      clear_all_events();
-      call_backend_add_all_events();
-      //chamar back 
+  
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());  
+    call_backend_add_all_events();
   }, []);
+
+
 
   return (
     <div className="p-4 bg-white h-screen">

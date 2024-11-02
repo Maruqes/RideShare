@@ -31,7 +31,6 @@ const ModalRoutes: React.FC<ModalRoutesProps> = () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             setRoutesArr(data);
         })
         .catch(error => console.error('Error fetching routes:', error));

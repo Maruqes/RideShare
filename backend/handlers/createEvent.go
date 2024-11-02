@@ -10,7 +10,6 @@ import (
 	"github.com/JotaBarbosaDev/RideShare/backend/db"
 	"github.com/JotaBarbosaDev/RideShare/backend/models"
 )
-
 func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	var event models.Event
 
