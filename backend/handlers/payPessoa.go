@@ -8,7 +8,7 @@ import (
 	"github.com/JotaBarbosaDev/RideShare/backend/db"
 )
 
-func PayPessoa(w http.ResponseWriter, r *http.Request) {
+func hPayPessoa(w http.ResponseWriter, r *http.Request) {
 	dindinStr := r.FormValue("dindin")
 	IDStr := r.FormValue("ID")
 
