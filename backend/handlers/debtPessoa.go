@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -38,7 +37,6 @@ func DebtPessoa(w http.ResponseWriter, r *http.Request) {
 
 	price_to_pay := 0.0
 	for i := 0; i < len(events); i++ {
-		fmt.Println(events[i].PersonsIDs)
 		persons_arr := strings.Split(events[i].PersonsIDs, "//")
 		for j := 0; j < len(persons_arr); j++ {
 			if persons_arr[j] == strconv.FormatInt(id, 10) {

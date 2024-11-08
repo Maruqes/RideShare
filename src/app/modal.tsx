@@ -15,6 +15,14 @@ type Route = {
     distance: number;
 };
 
+function createLinkForBackend() {
+    const our_url = window.location.href;
+    //change the port to 9000
+    const url = new URL(our_url);
+    url.port = '9000';
+    return url.origin;
+}
+
 const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEventsChange }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [eventsArr] = useState<any[]>([]);
@@ -24,7 +32,7 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
     const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
 
     function getPessoas() {
-        fetch('http://localhost:9000/getPersons', {
+        fetch(createLinkForBackend() + '/getPersons', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -46,7 +54,7 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
 
 
     function getRoutes() {
-        fetch('http://localhost:9000/getRoutes', {
+        fetch(createLinkForBackend() + '/getRoutes', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -69,7 +77,7 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
     }, [])
 
     const callBackEndAddEvento = async (title: string, start: string, end: string, desc: string, person_id: string, selectedRoute: string) => {
-        const response = await fetch('http://localhost:9000/createEvent', {
+        const response = await fetch(createLinkForBackend() + '/createEvent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -150,7 +158,7 @@ const Modal: React.FC<{ onEventsChange: (events: any[]) => void }> = ({ onEvents
         selectedPerson.forEach(person => {
             let personManhosa = person.split("//&&//");
             let pessoaNameToDelete = personManhosa[0];
-            fetch('http://localhost:9000/getEvents', {
+            fetch(createLinkForBackend() + '/getEvents', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
